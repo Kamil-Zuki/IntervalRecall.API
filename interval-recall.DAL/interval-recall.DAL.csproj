@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>interval_recall.BLL</RootNamespace>
+    <RootNamespace>interval_recall.DAL</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\interval-recall.DAL\interval-recall.DAL.csproj" />
+    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>
