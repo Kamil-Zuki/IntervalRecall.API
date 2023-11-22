@@ -1,9 +1,8 @@
 using interval_recall.BLL.DTOs;
-using interval_recall.BLL.Models;
 using interval_recall.BLL.Services;
+using interval_recall.DAL.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace interval_recall.Test
 {
@@ -49,7 +48,7 @@ namespace interval_recall.Test
         public void SpacedRepetitionAlgorithm_ReturnValue()
         {
 
-            Question question = new ()
+            Question question = new()
             {
                 Text = "¬ какой из этих столиц бывших союзных республик раньше других по€вилось метро?",
                 Answers = new List<Answer>()
@@ -79,7 +78,7 @@ namespace interval_recall.Test
                 var questionDTO = LearningService.SpacedRepetitionAlgorithm(testQuestionDTO);
                 if (i == 5)
                     testQuestionDTO.Qualities[2] = false;
-                i ++;
+                i++;
             }
         }
     }

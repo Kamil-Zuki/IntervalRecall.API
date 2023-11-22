@@ -1,4 +1,7 @@
 
+using interval_recall.DAL.EF;
+using Microsoft.EntityFrameworkCore;
+
 namespace interval_recall.API
 {
     public class Program
@@ -13,6 +16,12 @@ namespace interval_recall.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<IntervaRecallContext>(options =>
+            {
+                options.UseSqlite(builder.Configuration.GetConnectionString(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "interval-recall.db"))!);
+
+            }, ServiceLifetime.Scoped);
 
             var app = builder.Build();
 

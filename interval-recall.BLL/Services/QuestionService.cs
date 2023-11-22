@@ -6,7 +6,22 @@
         {
 
         }
+        public async Task CreateAsync()
+        {
 
+        }
+        public async Task GetGroupQuestionsAsync()
+        {
+
+        }
+        public async Task UpdateAsync()
+        {
+
+        }
+        public async Task DeleteQuestion()
+        {
+
+        }
 
     }
 }

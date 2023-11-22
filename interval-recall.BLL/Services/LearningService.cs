@@ -1,6 +1,6 @@
-﻿using interval_recall.BLL.Interfaces;
-using interval_recall.BLL.DTOs;
-using interval_recall.BLL.Models;
+﻿using interval_recall.BLL.DTOs;
+using interval_recall.BLL.Interfaces;
+using interval_recall.DAL.Entities;
 
 namespace interval_recall.BLL.Services
 {
@@ -28,7 +28,7 @@ namespace interval_recall.BLL.Services
                 question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.15), 2, MidpointRounding.AwayFromZero);
                 question.Interval = (int)Math.Max(question.Interval + 1, (question.Interval + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus);
             }
-            
+
             question.Repetitions++;
             //question.RepetitionDate = question.RepetitionDate.AddDays(question.Interval);
             question.RepetitionDate = DateTime.Now.AddDays(question.Interval);
@@ -39,8 +39,8 @@ namespace interval_recall.BLL.Services
         public static bool CorrectnessVerification(List<Answer> userAnswers, int correctAnswers)
         {
             if (userAnswers.Count != correctAnswers)
-                return false; 
-            
+                return false;
+
             bool allAnswersCorrect = userAnswers.All(answer => answer.IsCorrect);
 
             return allAnswersCorrect;
