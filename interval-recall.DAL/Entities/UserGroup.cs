@@ -15,6 +15,6 @@ namespace interval_recall.DAL.Entities
         public Guid Id { get; set; }
         public string Title { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<User>? Users { get; set; }
     }
 }

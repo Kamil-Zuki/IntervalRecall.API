@@ -15,9 +15,9 @@ namespace interval_recall.DAL.Entities
         public Guid Id { get; set; }
         public string UserName { get; set; }
 
-        public Guid UserGroupId { get; set; }
+        public Guid? UserGroupId { get; set; }
 
-        public virtual UserGroup UserGroup { get; set; }
+        public virtual UserGroup? UserGroup { get; set; }
 
         public virtual ICollection<QuestionGroup> QuestionGroups { get; set; }
 

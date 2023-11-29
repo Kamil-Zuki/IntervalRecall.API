@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Mapster.Core" Version="1.2.1" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\interval-recall.DAL\interval-recall.DAL.csproj" />
   </ItemGroup>
 

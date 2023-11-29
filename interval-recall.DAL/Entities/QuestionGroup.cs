@@ -18,9 +18,9 @@ namespace interval_recall.DAL.Entities
         public double EasyBonus { get; set; }
         public double NewInterval {get; set; }
 
-        public Guid UserId { get; set; }
-        public virtual User User { get; set; }
+        public Guid? UserId { get; set; }
+        public virtual User? User { get; set; }
 
-        public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<Question>? Questions { get; set; }
     }
 }

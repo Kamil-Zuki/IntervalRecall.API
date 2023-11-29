@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using interval_recall.DAL.EF;
 
@@ -10,9 +11,11 @@ using interval_recall.DAL.EF;
 namespace interval_recall.DAL.Migrations
 {
     [DbContext(typeof(IntervaRecallContext))]
-    partial class IntervaRecallContextModelSnapshot : ModelSnapshot
+    [Migration("20231128093335_AddQuestionStepAndState")]
+    partial class AddQuestionStepAndState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");

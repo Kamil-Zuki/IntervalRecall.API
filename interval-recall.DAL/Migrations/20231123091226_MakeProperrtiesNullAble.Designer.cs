@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using interval_recall.DAL.EF;
 
@@ -10,9 +11,11 @@ using interval_recall.DAL.EF;
 namespace interval_recall.DAL.Migrations
 {
     [DbContext(typeof(IntervaRecallContext))]
-    partial class IntervaRecallContextModelSnapshot : ModelSnapshot
+    [Migration("20231123091226_MakeProperrtiesNullAble")]
+    partial class MakeProperrtiesNullAble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -71,7 +74,7 @@ namespace interval_recall.DAL.Migrations
                     b.Property<int>("Interval")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("QuestionGroupId")
+                    b.Property<Guid?>("QuestionGroupId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("RepetitionDate")
@@ -79,13 +82,6 @@ namespace interval_recall.DAL.Migrations
 
                     b.Property<int>("Repetitions")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<TimeSpan>("Step")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -95,7 +91,7 @@ namespace interval_recall.DAL.Migrations
 
                     b.HasIndex("QuestionGroupId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Qestions");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.QuestionGroup", b =>
@@ -175,24 +171,20 @@ namespace interval_recall.DAL.Migrations
 
             modelBuilder.Entity("interval_recall.DAL.Entities.DecisionQuality", b =>
                 {
-                    b.HasOne("interval_recall.DAL.Entities.Question", "Question")
+                    b.HasOne("interval_recall.DAL.Entities.Question", "Qestion")
                         .WithMany("DecisionQualities")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Question");
+                    b.Navigation("Qestion");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.Question", b =>
                 {
-                    b.HasOne("interval_recall.DAL.Entities.QuestionGroup", "QuestionGroup")
+                    b.HasOne("interval_recall.DAL.Entities.QuestionGroup", null)
                         .WithMany("Questions")
-                        .HasForeignKey("QuestionGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("QuestionGroup");
+                        .HasForeignKey("QuestionGroupId");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.QuestionGroup", b =>

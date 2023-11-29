@@ -63,9 +63,9 @@ namespace interval_recall.Test
 
             QuestionDTO testQuestionDTO = new QuestionDTO()
             {
-                Qualities = new bool[] { true, false, true },
+                Qualities = new List<bool> { true, false, true },
                 EasyFactor = 2.5,
-                Interval = 1,
+                //Interval = 1,
                 IntervalModifier = 1,
                 NewInterval = 0.2,
                 RepetitionDate = DateTime.Now,

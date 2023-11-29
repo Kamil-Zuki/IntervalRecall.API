@@ -12,6 +12,6 @@ namespace interval_recall.DAL.Entities
 
         public Guid QuestionId { get; set; }
 
-        public virtual Question Qestion { get; set; }
+        public virtual Question Question { get; set; }
     }
 }
