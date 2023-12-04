@@ -1,5 +1,5 @@
-using interval_recall.BLL.DTOs;
 using interval_recall.BLL.Interfaces;
+using interval_recall.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace interval_recall.API.Controllers
@@ -27,6 +27,7 @@ namespace interval_recall.API.Controllers
                 {
                     Title = questionGroupDTO.Title,
                     IntervalModifier = questionGroupDTO.IntervalModifier,
+
                     EasyBonus = questionGroupDTO.EasyBonus,
                     NewInterval = questionGroupDTO.NewInterval,
                     UserId = questionGroupDTO.UserId
@@ -41,7 +42,7 @@ namespace interval_recall.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<List<OutQuestionGroupDTO>>> Get()
         {
             try
             {

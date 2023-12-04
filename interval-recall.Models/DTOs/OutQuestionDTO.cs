@@ -1,10 +1,8 @@
-﻿using interval_recall.DAL.Entities;
-
-namespace interval_recall.BLL.DTOs
+﻿namespace interval_recall.Models.DTOs
 {
     public class OutQuestionDTO
     {
-        public Guid Id { get; set; }
+        public Guid QuestionId { get; set; }
         public string Text { get; set; }
 
         public virtual ICollection<OutAnswerDTO> Answers { get; set; }

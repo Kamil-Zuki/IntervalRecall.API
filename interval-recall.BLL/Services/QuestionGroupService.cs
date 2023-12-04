@@ -1,7 +1,7 @@
-﻿using interval_recall.BLL.DTOs;
-using interval_recall.BLL.Interfaces;
+﻿using interval_recall.BLL.Interfaces;
 using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
+using interval_recall.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace interval_recall.BLL.Services

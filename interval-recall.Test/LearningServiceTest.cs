@@ -1,6 +1,6 @@
-using interval_recall.BLL.DTOs;
 using interval_recall.BLL.Services;
 using interval_recall.DAL.Entities;
+using interval_recall.Models.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

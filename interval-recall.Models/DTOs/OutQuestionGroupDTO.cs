@@ -1,4 +1,4 @@
-﻿namespace interval_recall.BLL.DTOs
+﻿namespace interval_recall.Models.DTOs
 {
     public class OutQuestionGroupDTO : InQuestionGroupDTO
     {

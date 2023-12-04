@@ -1,6 +1,4 @@
-﻿using interval_recall.DAL.Entities;
-
-namespace interval_recall.BLL.DTOs
+﻿namespace interval_recall.Models.DTOs
 {
     public class UserGroupDTO
     {

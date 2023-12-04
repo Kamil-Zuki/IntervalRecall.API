@@ -1,9 +1,9 @@
-﻿using interval_recall.BLL.DTOs;
+﻿using interval_recall.Models.DTOs;
 
 namespace interval_recall.BLL.Interfaces
 {
     public interface ILearningService
     {
-        Task Recall(List<InUserResponceDTO> userResponces); 
+        Task<(int, int)> RecallAsync(List<InUserResponceDTO> userResponces);
     }
 }

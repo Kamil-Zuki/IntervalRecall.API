@@ -1,7 +1,7 @@
-﻿using interval_recall.BLL.DTOs;
-using interval_recall.BLL.Interfaces;
+﻿using interval_recall.BLL.Interfaces;
 using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
+using interval_recall.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace interval_recall.BLL.Services
@@ -29,19 +29,28 @@ namespace interval_recall.BLL.Services
             await _dataContext.SaveChangesAsync();
         }
 
-        public async Task<List<OutQuestionDTO>> GetRecallQuestions()
+        public async Task<List<OutRecallQuestionGroupDTO>> GetRecallQuestionsAsync(Guid? questionGroupId)
         {
-            return await _dataContext.Questions.Where(x => DateTime.Now.Date >= x.RepetitionDate.Date )
-                .Select(questionDTO => new OutQuestionDTO()
+            var questionGroups = _dataContext.QuestionGroups.Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) && qGroup.Questions.Any(x => DateTime.Now.Date >= x.RepetitionDate.Date))
+                .Include(qGroup => qGroup.Questions)
+                .ThenInclude(q => q.Answers);
+
+
+            return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
+            {
+                QuestionGroupId = g.Id,
+                Title = g.Title,
+                Questions = g.Questions.Select(q => new OutQuestionDTO()
                 {
-                    Id = questionDTO.Id,
-                    Text = questionDTO.Text,
-                    Answers = questionDTO.Answers.Select(answerDTO => new OutAnswerDTO()
+                    QuestionId = q.Id,
+                    Text = q.Text,
+                    Answers = q.Answers.Select(a => new OutAnswerDTO()
                     {
-                        Id = answerDTO.Id,
-                        Value = answerDTO.Value
+                        AnswerId = a.Id,
+                        Value = a.Value
                     }).ToList()
-                }).ToListAsync();
+                }).ToList(),
+            }).ToList();
         }
 
         public async Task GetAnswersToQuestionsAsync(List<InUserResponceDTO> userResponces)

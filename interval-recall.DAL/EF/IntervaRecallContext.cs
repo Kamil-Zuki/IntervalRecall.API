@@ -19,7 +19,7 @@ namespace interval_recall.DAL.EF
         {
             //_databasePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "interval-recall.db");
             _databasePath = @"C:\Users\karat\Desktop\Projects\interval-recall\interval-recall.API\wwwroot" + @"\interval-recall.db";
-            Database.Migrate();
+            //Database.Migrate();
             //Database.EnsureCreated();
         }
 

@@ -1,4 +1,3 @@
-
 using interval_recall.BLL.Interfaces;
 using interval_recall.BLL.Services;
 using interval_recall.DAL.EF;
@@ -14,6 +13,9 @@ namespace interval_recall.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddCors();
+
+
 
             builder.Services.AddControllers();
 
@@ -39,7 +41,12 @@ namespace interval_recall.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+            });
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

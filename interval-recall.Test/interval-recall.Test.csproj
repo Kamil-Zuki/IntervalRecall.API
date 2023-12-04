@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\interval-recall.BLL\interval-recall.BLL.csproj" />
+    <ProjectReference Include="..\interval-recall.Models\interval-recall.Models.csproj" />
   </ItemGroup>
 
 </Project>
