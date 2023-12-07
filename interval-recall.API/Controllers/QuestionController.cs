@@ -31,7 +31,7 @@ namespace interval_recall.API.Controllers
         }
 
         [HttpPost("answers")]
-        public async Task<ActionResult> GetAnswersAsync(List<InUserResponceDTO> userResponces)
+        public async Task<ActionResult<SubmissionResult>> GetAnswersAsync(List<InUserResponceDTO> userResponces)
         {
             try
             {
@@ -50,6 +50,19 @@ namespace interval_recall.API.Controllers
             try
             {
                 return Ok(await _questionService.GetRecallQuestionsAsync(questionGroupId));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet("statistics")]
+        public async Task<ActionResult<List<StatisticQuestionGroup>>> GetStatistic(Guid? questionGroupId)
+        {
+            try
+            {
+                return await _questionService.GetStatisticAsync(questionGroupId);
             }
             catch (Exception ex)
             {

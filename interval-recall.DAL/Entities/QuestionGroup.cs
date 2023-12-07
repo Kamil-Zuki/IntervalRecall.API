@@ -14,8 +14,8 @@ namespace interval_recall.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Title { get; set; }
-        //public int New { get; set; }
-        //public int Learn { get; set; }
+        public int AmountOfNew { get; set; }
+        public int AmountOfLearn { get; set; }
         public double IntervalModifier { get; set; }
         public double EasyBonus { get; set; }
         public double NewInterval {get; set; }

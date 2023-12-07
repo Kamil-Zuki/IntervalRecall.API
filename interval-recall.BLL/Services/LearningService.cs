@@ -13,9 +13,9 @@ namespace interval_recall.BLL.Services
     {
 
         private readonly IQuestionService _questionService;
-        private readonly IntervaRecallContext _dbContext;
+        private readonly IntervalRecallContext _dbContext;
         private readonly IMapper _mapper;
-        public LearningService(IQuestionService questionService, IntervaRecallContext dbContext, IMapper mapper)
+        public LearningService(IQuestionService questionService, IntervalRecallContext dbContext, IMapper mapper)
         {
             _questionService = questionService;
             _dbContext = dbContext;

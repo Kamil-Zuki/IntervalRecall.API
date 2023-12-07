@@ -27,10 +27,11 @@ namespace interval_recall.API.Controllers
                 {
                     Title = questionGroupDTO.Title,
                     IntervalModifier = questionGroupDTO.IntervalModifier,
-
+                    AmountOfNew = questionGroupDTO.AmountOfNew,
+                    AmountOfLearn = questionGroupDTO.AmountOfLearn,
                     EasyBonus = questionGroupDTO.EasyBonus,
                     NewInterval = questionGroupDTO.NewInterval,
-                    UserId = questionGroupDTO.UserId
+                    UserId = questionGroupDTO.UserId 
                 });
                 return Ok();
 

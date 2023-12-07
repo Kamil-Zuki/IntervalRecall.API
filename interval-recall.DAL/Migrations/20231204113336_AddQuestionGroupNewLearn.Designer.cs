@@ -11,8 +11,8 @@ using interval_recall.DAL.EF;
 namespace interval_recall.DAL.Migrations
 {
     [DbContext(typeof(IntervalRecallContext))]
-    [Migration("20231123143943_AddQuestionQuestionGroupReference")]
-    partial class AddQuestionQuestionGroupReference
+    [Migration("20231204113336_AddQuestionGroupNewLearn")]
+    partial class AddQuestionGroupNewLearn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,8 +71,8 @@ namespace interval_recall.DAL.Migrations
                     b.Property<double>("EasyFactor")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("Interval")
-                        .HasColumnType("INTEGER");
+                    b.Property<TimeSpan>("Interval")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("QuestionGroupId")
                         .HasColumnType("TEXT");
@@ -82,6 +82,13 @@ namespace interval_recall.DAL.Migrations
 
                     b.Property<int>("Repetitions")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("Step")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -105,6 +112,12 @@ namespace interval_recall.DAL.Migrations
 
                     b.Property<double>("IntervalModifier")
                         .HasColumnType("REAL");
+
+                    b.Property<int>("Learn")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("New")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("NewInterval")
                         .HasColumnType("REAL");

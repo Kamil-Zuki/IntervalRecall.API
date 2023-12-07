@@ -2,14 +2,15 @@
 using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
 using interval_recall.Models.DTOs;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace interval_recall.BLL.Services
 {
     public class QuestionService : IQuestionService
     {
-        private readonly IntervaRecallContext _dataContext;
-        public QuestionService(IntervaRecallContext dataContext)
+        private readonly IntervalRecallContext _dataContext;
+        public QuestionService(IntervalRecallContext dataContext)
         {
             _dataContext = dataContext;
         }
@@ -31,27 +32,85 @@ namespace interval_recall.BLL.Services
 
         public async Task<List<OutRecallQuestionGroupDTO>> GetRecallQuestionsAsync(Guid? questionGroupId)
         {
-            var questionGroups = _dataContext.QuestionGroups.Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) && qGroup.Questions.Any(x => DateTime.Now.Date >= x.RepetitionDate.Date))
-                .Include(qGroup => qGroup.Questions)
-                .ThenInclude(q => q.Answers);
-
-
-            return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
+            if (questionGroupId != null)
             {
-                QuestionGroupId = g.Id,
-                Title = g.Title,
-                Questions = g.Questions.Select(q => new OutQuestionDTO()
-                {
-                    QuestionId = q.Id,
-                    Text = q.Text,
-                    Answers = q.Answers.Select(a => new OutAnswerDTO()
+                var questionGroup = await _dataContext.QuestionGroups
+                .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue))
+                .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync();
+
+                var random = new Random();
+                var newQuestions = questionGroup.Questions
+                    .Where(q => q.State == "New")
+                    .OrderBy(q => random.Next())
+                    .Take(questionGroup.AmountOfNew)
+                    .ToList();
+
+                var learnAndGraduatedQuestions = questionGroup.Questions
+                    .Where(q => q.State == "Learning" || q.State == "Graduated")
+                    .OrderBy(q => random.Next())
+                    .Take(questionGroup.AmountOfLearn)
+                    .ToList();
+
+                List<Question> questions = new();
+                questions.AddRange(newQuestions);
+                questions.AddRange(learnAndGraduatedQuestions);
+
+                return new List<OutRecallQuestionGroupDTO>
                     {
-                        AnswerId = a.Id,
-                        Value = a.Value
-                    }).ToList()
-                }).ToList(),
-            }).ToList();
+                        new OutRecallQuestionGroupDTO()
+                        {
+                            QuestionGroupId = questionGroup.Id,
+                            Title = questionGroup.Title,
+                            Questions = questions.Select(q => new OutQuestionDTO()
+                            {
+                                QuestionId = q.Id,
+                                Text = q.Text,
+                                State = q.State,
+                                Answers = q.Answers.Select(a => new OutAnswerDTO()
+                                {
+                                    AnswerId = a.Id,
+                                    Value = a.Value
+                                }).ToList()
+                            }).ToList()
+                        }
+                    };
+            }
+
+            else
+            {
+                var questionGroups = _dataContext.QuestionGroups
+                .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >= /*question.RepetitionDate*/ DateTime.MinValue))
+                .ThenInclude(q => q.Answers)
+                .ToList();
+
+                return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
+                {
+                    QuestionGroupId = g.Id,
+                    Title = g.Title,
+                    Questions = g.Questions.Select(q => new OutQuestionDTO()
+                    {
+                        QuestionId = q.Id,
+                        Text = q.Text,
+                        State = q.State,
+                        Answers = q.Answers.Select(a => new OutAnswerDTO()
+                        {
+                            AnswerId = a.Id,
+                            Value = a.Value
+                        }).ToList()
+                    }).ToList(),
+                }).ToList();
+            }
         }
+
+        public async Task<List<StatisticQuestionGroup>> GetStatisticAsync(Guid? questionGroupId)
+        {
+            return _dataContext.QuestionGroups.Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
+                .Include(qGroup => qGroup.Questions).Adapt<List<StatisticQuestionGroup>>();
+        }
+
 
         public async Task GetAnswersToQuestionsAsync(List<InUserResponceDTO> userResponces)
         {

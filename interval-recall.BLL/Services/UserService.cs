@@ -6,8 +6,8 @@ namespace interval_recall.BLL.Services
 {
     public class UserService
     {
-        private readonly IntervaRecallContext _dataContext;
-        public UserService(IntervaRecallContext dataContext)
+        private readonly IntervalRecallContext _dataContext;
+        public UserService(IntervalRecallContext dataContext)
         {
             _dataContext = dataContext;
         }

@@ -11,20 +11,17 @@ namespace interval_recall.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
             builder.Services.AddCors();
-
-
 
             builder.Services.AddControllers();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<IntervaRecallContext>(options =>
+            builder.Services.AddDbContext<IntervalRecallContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "interval-recall.db"))!);
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 
             }, ServiceLifetime.Scoped);
 

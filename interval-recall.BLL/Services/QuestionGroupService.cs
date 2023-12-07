@@ -8,8 +8,8 @@ namespace interval_recall.BLL.Services
 {
     public class QuestionGroupService : IQuestionGroupService
     {
-        private readonly IntervaRecallContext _dataContext;
-        public QuestionGroupService(IntervaRecallContext dataContext)
+        private readonly IntervalRecallContext _dataContext;
+        public QuestionGroupService(IntervalRecallContext dataContext)
         {
             _dataContext = dataContext;
         }
@@ -19,6 +19,8 @@ namespace interval_recall.BLL.Services
             _dataContext.QuestionGroups.Add(new QuestionGroup()
             {
                 Title = questionGroupDTO.Title,
+                AmountOfNew = questionGroupDTO.AmountOfNew,
+                AmountOfLearn = questionGroupDTO.AmountOfLearn,
                 IntervalModifier = questionGroupDTO.IntervalModifier,
                 EasyBonus = questionGroupDTO.EasyBonus,
                 NewInterval = questionGroupDTO.NewInterval
@@ -32,6 +34,8 @@ namespace interval_recall.BLL.Services
             {
                 Id = x.Id,
                 Title = x.Title,
+                AmountOfNew = x.AmountOfNew,
+                AmountOfLearn = x.AmountOfLearn,
                 IntervalModifier = x.IntervalModifier,
                 NewInterval = x.NewInterval,
                 EasyBonus = x.EasyBonus,

@@ -10,7 +10,7 @@ using interval_recall.DAL.EF;
 
 namespace interval_recall.DAL.Migrations
 {
-    [DbContext(typeof(IntervaRecallContext))]
+    [DbContext(typeof(IntervalRecallContext))]
     [Migration("20231123091226_MakeProperrtiesNullAble")]
     partial class MakeProperrtiesNullAble
     {

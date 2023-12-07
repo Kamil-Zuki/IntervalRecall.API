@@ -12,7 +12,7 @@ namespace interval_recall.Test
     {
         private readonly IServiceScope _scope;
         public IConfiguration _configuration;
-        private readonly IntervaRecallContext _dataContext;
+        private readonly IntervalRecallContext _dataContext;
         public IConfigurationBuilder _configurationBuilder;
 
         public QuestionGroupServicFixture()
@@ -23,7 +23,7 @@ namespace interval_recall.Test
             _configuration = configBuilder.Build();
             serviceCollection.AddSingleton(_configuration);  // Register the configuration as a singleton
 
-            serviceCollection.AddDbContext<IntervaRecallContext>(options =>
+            serviceCollection.AddDbContext<IntervalRecallContext>(options =>
             {
                 options.UseSqlite(_configuration.GetConnectionString(@"C:\Users\karat\Desktop\Projects\interval-recall\interval-recall.API\wwwroot")!);
             });
@@ -50,7 +50,7 @@ namespace interval_recall.Test
         private readonly IQuestionGroupService _questionGroupService;
         public QuestionGroupServiceTest(QuestionGroupServicFixture questionGroupServicFixture)
         {
-            _questionGroupService = new QuestionGroupService(questionGroupServicFixture.GetService<IntervaRecallContext>());
+            _questionGroupService = new QuestionGroupService(questionGroupServicFixture.GetService<IntervalRecallContext>());
         }
         [Fact]
         public void Create_ShouldCreateGroupService()

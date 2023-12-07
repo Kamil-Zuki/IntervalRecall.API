@@ -1,8 +1,9 @@
 ﻿using interval_recall.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 namespace interval_recall.DAL.EF
 {
-    public class IntervaRecallContext : DbContext
+    public class IntervalRecallContext : DbContext
     {
         public DbSet<User> Users { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
@@ -14,18 +15,24 @@ namespace interval_recall.DAL.EF
 
         private readonly string _databasePath;
 
-        public IntervaRecallContext(DbContextOptions<IntervaRecallContext> options)
+        public IntervalRecallContext(DbContextOptions<IntervalRecallContext> options, IConfiguration configuration)
             : base(options)
         {
             //_databasePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "interval-recall.db");
-            _databasePath = @"C:\Users\karat\Desktop\Projects\interval-recall\interval-recall.API\wwwroot" + @"\interval-recall.db";
+            _databasePath = configuration.GetConnectionString("DefaultConnection");
             //Database.Migrate();
             //Database.EnsureCreated();
         }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite(@"Data Source="+ _databasePath);
+        {
+            if (!options.IsConfigured)
+            {
+                options.UseSqlite(@"Data Source=" + _databasePath);
+            }
+
+        }
 
     }
 }

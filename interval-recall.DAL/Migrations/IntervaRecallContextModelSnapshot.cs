@@ -9,7 +9,7 @@ using interval_recall.DAL.EF;
 
 namespace interval_recall.DAL.Migrations
 {
-    [DbContext(typeof(IntervaRecallContext))]
+    [DbContext(typeof(IntervalRecallContext))]
     partial class IntervaRecallContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -68,8 +68,8 @@ namespace interval_recall.DAL.Migrations
                     b.Property<double>("EasyFactor")
                         .HasColumnType("REAL");
 
-                    b.Property<int>("Interval")
-                        .HasColumnType("INTEGER");
+                    b.Property<TimeSpan>("Interval")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("QuestionGroupId")
                         .HasColumnType("TEXT");
@@ -103,6 +103,12 @@ namespace interval_recall.DAL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("AmountOfLearn")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AmountOfNew")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("EasyBonus")
                         .HasColumnType("REAL");
