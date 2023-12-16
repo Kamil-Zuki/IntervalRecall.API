@@ -32,32 +32,34 @@ namespace interval_recall.BLL.Services
 
         public async Task<List<OutRecallQuestionGroupDTO>> GetRecallQuestionsAsync(Guid? questionGroupId)
         {
-            if (questionGroupId != null)
+            try
             {
-                var questionGroup = await _dataContext.QuestionGroups
-                .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
-                .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue))
-                .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync();
+                if (questionGroupId != null)
+                {
+                    var questionGroup = await _dataContext.QuestionGroups
+                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                    .Include(qGroup => qGroup.Questions) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync();
 
-                var random = new Random();
-                var newQuestions = questionGroup.Questions
-                    .Where(q => q.State == "New")
-                    .OrderBy(q => random.Next())
-                    .Take(questionGroup.AmountOfNew)
-                    .ToList();
+                    var random = new Random();
+                    var newQuestions = questionGroup.Questions
+                        .Where(q => q.State == "New")
+                        .OrderBy(q => random.Next())
+                        .Take(questionGroup.AmountOfNew)
+                        .ToList();
 
-                var learnAndGraduatedQuestions = questionGroup.Questions
-                    .Where(q => q.State == "Learning" || q.State == "Graduated")
-                    .OrderBy(q => random.Next())
-                    .Take(questionGroup.AmountOfLearn)
-                    .ToList();
+                    var learnAndGraduatedQuestions = questionGroup.Questions
+                        .Where(q => q.State == "Learning" || q.State == "Graduated")
+                        .OrderBy(q => random.Next())
+                        .Take(questionGroup.AmountOfLearn)
+                        .ToList();
 
-                List<Question> questions = new();
-                questions.AddRange(newQuestions);
-                questions.AddRange(learnAndGraduatedQuestions);
+                    List<Question> questions = new();
+                    questions.AddRange(newQuestions);
+                    questions.AddRange(learnAndGraduatedQuestions);
 
-                return new List<OutRecallQuestionGroupDTO>
+                    return new List<OutRecallQuestionGroupDTO>
                     {
                         new OutRecallQuestionGroupDTO()
                         {
@@ -76,40 +78,42 @@ namespace interval_recall.BLL.Services
                             }).ToList()
                         }
                     };
-            }
+                }
 
-            else
-            {
-                var questionGroups = _dataContext.QuestionGroups
-                .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
-                .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >= /*question.RepetitionDate*/ DateTime.MinValue))
-                .ThenInclude(q => q.Answers)
-                .ToList();
-
-                return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
+                else
                 {
-                    QuestionGroupId = g.Id,
-                    Title = g.Title,
-                    Questions = g.Questions.Select(q => new OutQuestionDTO()
+                    var questionGroups = _dataContext.QuestionGroups
+                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                    .Include(qGroup => qGroup.Questions/*.Where(question => DateTime.Now >= question.RepetitionDate)*/)
+                    .ThenInclude(q => q.Answers)
+                    .ToList();
+
+                    return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
                     {
-                        QuestionId = q.Id,
-                        Text = q.Text,
-                        State = q.State,
-                        Answers = q.Answers.Select(a => new OutAnswerDTO()
+                        QuestionGroupId = g.Id,
+                        Title = g.Title,
+                        Questions = g.Questions.Select(q => new OutQuestionDTO()
                         {
-                            AnswerId = a.Id,
-                            Value = a.Value
-                        }).ToList()
-                    }).ToList(),
-                }).ToList();
+                            QuestionId = q.Id,
+                            Text = q.Text,
+                            State = q.State,
+                            Answers = q.Answers.Select(a => new OutAnswerDTO()
+                            {
+                                AnswerId = a.Id,
+                                Value = a.Value
+                            }).ToList()
+                        }).ToList(),
+                    }).ToList();
+                }
             }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
-        public async Task<List<StatisticQuestionGroup>> GetStatisticAsync(Guid? questionGroupId)
-        {
-            return _dataContext.QuestionGroups.Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
-                .Include(qGroup => qGroup.Questions).Adapt<List<StatisticQuestionGroup>>();
-        }
+
 
 
         public async Task GetAnswersToQuestionsAsync(List<InUserResponceDTO> userResponces)

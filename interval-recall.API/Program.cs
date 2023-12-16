@@ -18,17 +18,19 @@ namespace interval_recall.API
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<IntervalRecallContext>(options =>
             {
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                //options.UseSqlServer(connectionString);
 
-            }, ServiceLifetime.Scoped);
+            });
 
             builder.Services.AddMapster();
             builder.Services.AddScoped<IQuestionGroupService, QuestionGroupService>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
             builder.Services.AddScoped<ILearningService, LearningService>();
+            builder.Services.AddScoped<IStatisticService, StatisticService>();
 
             var app = builder.Build();
 

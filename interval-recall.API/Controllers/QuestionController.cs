@@ -57,18 +57,8 @@ namespace interval_recall.API.Controllers
             }
         }
 
-        [HttpGet("statistics")]
-        public async Task<ActionResult<List<StatisticQuestionGroup>>> GetStatistic(Guid? questionGroupId)
-        {
-            try
-            {
-                return await _questionService.GetStatisticAsync(questionGroupId);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+
+        
 
     }
 }

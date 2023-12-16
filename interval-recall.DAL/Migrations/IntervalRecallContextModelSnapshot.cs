@@ -2,7 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using interval_recall.DAL.EF;
 
@@ -11,30 +11,32 @@ using interval_recall.DAL.EF;
 namespace interval_recall.DAL.Migrations
 {
     [DbContext(typeof(IntervalRecallContext))]
-    [Migration("20231122124446_AddModel_QuestionGroup")]
-    partial class AddModel_QuestionGroup
+    partial class IntervalRecallContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("interval_recall.DAL.Entities.Answer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsCorrect")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("QuestionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -47,13 +49,13 @@ namespace interval_recall.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("QuestionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Value")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -66,92 +68,105 @@ namespace interval_recall.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("EasyFactor")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
-                    b.Property<int>("Interval")
-                        .HasColumnType("INTEGER");
+                    b.Property<TimeSpan>("Interval")
+                        .HasColumnType("time");
 
-                    b.Property<Guid?>("QuestionGroupId")
-                        .HasColumnType("TEXT");
+                    b.Property<Guid>("QuestionGroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("RepetitionDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Repetitions")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("Step")
+                        .HasColumnType("time");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionGroupId");
 
-                    b.ToTable("Qestions");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.QuestionGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AmountOfLearn")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmountOfNew")
+                        .HasColumnType("int");
 
                     b.Property<double>("EasyBonus")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.Property<double>("IntervalModifier")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.Property<double>("NewInterval")
-                        .HasColumnType("REAL");
+                        .HasColumnType("float");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("QestionGroups");
+                    b.ToTable("QuestionGroups");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserGroupId")
-                        .HasColumnType("TEXT");
+                    b.Property<Guid?>("UserGroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserGroupId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.UserGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -171,29 +186,31 @@ namespace interval_recall.DAL.Migrations
 
             modelBuilder.Entity("interval_recall.DAL.Entities.DecisionQuality", b =>
                 {
-                    b.HasOne("interval_recall.DAL.Entities.Question", "Qestion")
+                    b.HasOne("interval_recall.DAL.Entities.Question", "Question")
                         .WithMany("DecisionQualities")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Qestion");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.Question", b =>
                 {
-                    b.HasOne("interval_recall.DAL.Entities.QuestionGroup", null)
+                    b.HasOne("interval_recall.DAL.Entities.QuestionGroup", "QuestionGroup")
                         .WithMany("Questions")
-                        .HasForeignKey("QuestionGroupId");
+                        .HasForeignKey("QuestionGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestionGroup");
                 });
 
             modelBuilder.Entity("interval_recall.DAL.Entities.QuestionGroup", b =>
                 {
                     b.HasOne("interval_recall.DAL.Entities.User", "User")
                         .WithMany("QuestionGroups")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -202,9 +219,7 @@ namespace interval_recall.DAL.Migrations
                 {
                     b.HasOne("interval_recall.DAL.Entities.UserGroup", "UserGroup")
                         .WithMany("Users")
-                        .HasForeignKey("UserGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserGroupId");
 
                     b.Navigation("UserGroup");
                 });

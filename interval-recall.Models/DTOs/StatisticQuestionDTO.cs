@@ -3,6 +3,7 @@
     public class StatisticQuestionDTO
     {
         public Guid Id { get; set; }
+        public string Text { get; set; }
         public TimeSpan Interval { get; set; }
         public DateTime RepetitionDate { get; set; }
         public string State { get; set; }

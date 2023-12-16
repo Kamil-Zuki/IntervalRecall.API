@@ -79,6 +79,7 @@ namespace interval_recall.BLL.Services
             var delay = (question.RepetitionDate - DateTime.Now).Days;// Test
 
 
+
             if (question.Qualities[^1] == false)// Incorrect(0)
             {
                 question.EasyFactor = Math.Round(Math.Max(1.3, question.EasyFactor - 0.2), 2, MidpointRounding.AwayFromZero);
