@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\interval-recall.DAL\interval-recall.DAL.csproj" />
-    <ProjectReference Include="..\interval-recall.Models\interval-recall.Models.csproj" />
+    <ProjectReference Include="..\interval-recall.DAL\IntervalRecall.DAL.csproj" />
+    <ProjectReference Include="..\interval-recall.Models\IntervalRecall.Models.csproj" />
   </ItemGroup>
 
 </Project>
