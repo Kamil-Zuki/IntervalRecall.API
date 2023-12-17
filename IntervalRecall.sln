@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.API", "interval-recall.API\IntervalRecall.API.csproj", "{A11ECC08-61FF-46AC-B962-45F5038D0F30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.BLL", "interval-recall.BLL\IntervalRecall.BLL.csproj", "{F6C4BBA4-FBFA-46FF-843D-6A67FCC3DFCC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.Test", "interval-recall.Test\IntervalRecall.Test.csproj", "{6BF3037F-8663-432D-93D0-BE747152C6C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.DAL", "interval-recall.DAL\IntervalRecall.DAL.csproj", "{4E3A6792-51BC-4D09-9EE0-DD700598266E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.UI", "..\IntervalRecall.UI\IntervalRecall.UI.csproj", "{A74AEB02-EE12-471F-B03A-36B339D31595}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalRecall.Models", "interval-recall.Models\IntervalRecall.Models.csproj", "{4943C31B-925B-4BDA-A2F8-7936139A5B78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A11ECC08-61FF-46AC-B962-45F5038D0F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A11ECC08-61FF-46AC-B962-45F5038D0F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A11ECC08-61FF-46AC-B962-45F5038D0F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A11ECC08-61FF-46AC-B962-45F5038D0F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C4BBA4-FBFA-46FF-843D-6A67FCC3DFCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C4BBA4-FBFA-46FF-843D-6A67FCC3DFCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C4BBA4-FBFA-46FF-843D-6A67FCC3DFCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C4BBA4-FBFA-46FF-843D-6A67FCC3DFCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF3037F-8663-432D-93D0-BE747152C6C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF3037F-8663-432D-93D0-BE747152C6C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF3037F-8663-432D-93D0-BE747152C6C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF3037F-8663-432D-93D0-BE747152C6C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3A6792-51BC-4D09-9EE0-DD700598266E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3A6792-51BC-4D09-9EE0-DD700598266E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3A6792-51BC-4D09-9EE0-DD700598266E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3A6792-51BC-4D09-9EE0-DD700598266E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A74AEB02-EE12-471F-B03A-36B339D31595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A74AEB02-EE12-471F-B03A-36B339D31595}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A74AEB02-EE12-471F-B03A-36B339D31595}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A74AEB02-EE12-471F-B03A-36B339D31595}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4943C31B-925B-4BDA-A2F8-7936139A5B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4943C31B-925B-4BDA-A2F8-7936139A5B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4943C31B-925B-4BDA-A2F8-7936139A5B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4943C31B-925B-4BDA-A2F8-7936139A5B78}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4208CBD2-6539-45A5-B890-913F2BF23037}
+	EndGlobalSection
+EndGlobal

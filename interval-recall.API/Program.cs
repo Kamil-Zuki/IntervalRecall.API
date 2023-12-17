@@ -1,3 +1,8 @@
+using interval_recall.BLL.Interfaces;
+using interval_recall.BLL.Services;
+using interval_recall.DAL.EF;
+using Microsoft.EntityFrameworkCore;
+using Mapster;
 
 namespace interval_recall.API
 {
@@ -6,13 +11,26 @@ namespace interval_recall.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
+            builder.Services.AddCors();
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<IntervalRecallContext>(options =>
+            {
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                //options.UseSqlServer(connectionString);
+
+            });
+
+            builder.Services.AddMapster();
+            builder.Services.AddScoped<IQuestionGroupService, QuestionGroupService>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
+            builder.Services.AddScoped<ILearningService, LearningService>();
+            builder.Services.AddScoped<IStatisticService, StatisticService>();
 
             var app = builder.Build();
 
@@ -22,7 +40,12 @@ namespace interval_recall.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+            });
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
