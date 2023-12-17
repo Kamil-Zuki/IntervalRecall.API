@@ -21,8 +21,8 @@ namespace interval_recall.API
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<IntervalRecallContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-                //options.UseSqlServer(connectionString);
+                //options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
 
             });
 

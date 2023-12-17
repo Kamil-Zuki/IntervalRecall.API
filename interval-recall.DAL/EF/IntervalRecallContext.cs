@@ -19,7 +19,7 @@ namespace interval_recall.DAL.EF
             //connectionString = _configuration.GetConnectionString("DefaultConnection");
             //_databasePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "interval-recall.db");
             _databasePath = configuration.GetConnectionString("DefaultConnection");
-            //Database.Migrate();
+            Database.Migrate();
             //Database.EnsureCreated();
         }
 
@@ -37,8 +37,8 @@ namespace interval_recall.DAL.EF
         {
             if (!options.IsConfigured)
             {
-                options.UseSqlite(@"Data Source=" + _databasePath);
-                //options.UseSqlServer(connectionString);
+                //options.UseSqlite(@"Data Source=" + _databasePath);
+                options.UseSqlServer(connectionString);
             }
 
         }
