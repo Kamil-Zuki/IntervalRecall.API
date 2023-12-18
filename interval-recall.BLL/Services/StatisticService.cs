@@ -5,11 +5,6 @@ using interval_recall.DAL.Models;
 using interval_recall.Models.DTOs;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace interval_recall.BLL.Services
 {
@@ -25,7 +20,7 @@ namespace interval_recall.BLL.Services
             IQueryable<Question> questions = _dataContext.Questions.Where(q => q.QuestionGroupId == questionGroupId);
             if (!questions.Any())
                 throw new Exception("There is no such group of questions");
-            foreach(var question in questions)
+            foreach (var question in questions)
             {
                 question.Interval = TimeSpan.FromMinutes(1);
                 question.EasyFactor = 2.5;

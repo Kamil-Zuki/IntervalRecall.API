@@ -120,7 +120,7 @@ namespace interval_recall.BLL.Services
                     Enum.GetName(typeof(States), States.Learning)! :
                     Enum.GetName(typeof(States), States.Graduated)!;
 
-                if (question.Step == TimeSpan.FromMinutes(23.59))
+                if (question.Step == TimeSpan.FromHours(23))
                 {
                     question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
                     //question.Step = TimeSpan.FromDays(1);
@@ -130,7 +130,7 @@ namespace interval_recall.BLL.Services
                 else if (question.Step == TimeSpan.FromMinutes(10))
                 {
                     question.Interval = TimeSpan.FromDays(1);
-                    question.Step = TimeSpan.FromMinutes(23.59);
+                    question.Step = TimeSpan.FromHours(23);
                 }
 
                 else if (question.Step == TimeSpan.FromMinutes(1))
