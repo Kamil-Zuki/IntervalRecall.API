@@ -16,7 +16,13 @@ namespace interval_recall.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Text { get; set; }
-        public TimeSpan Interval { get; set; } = TimeSpan.FromMinutes(1);
+        public Int64 IntervalTicks { get; set; } = 60;
+        [NotMapped]
+        public TimeSpan Interval
+        {
+            get { return TimeSpan.FromTicks(IntervalTicks); }
+            set { IntervalTicks = value.Ticks; }
+        }
         public double EasyFactor { get; set; } = 2.5;
         public int Repetitions { get; set; } = 0;
         public DateTime RepetitionDate { get; set; } = DateTime.Now;

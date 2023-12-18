@@ -25,52 +25,60 @@ namespace interval_recall.BLL.Services
 
         public async Task<(int,int)> RecallAsync(List<InUserResponceDTO> userResponces)
         {
-            int correct = 0;
-            int incorrect = 0;
-            foreach (var userResponce in userResponces)
+            try
             {
-                Question? question = _dbContext.Questions
-                    .Include(q => q.QuestionGroup)
-                    .Include(q => q.Answers)
-                    .Include(q => q.DecisionQualities)
-                    .FirstOrDefault(x => x.Id == userResponce.QuestionId);
-
-                var answers = question.Answers;
-                var correctAnswersAmount = question.Answers.Where(x => x.IsCorrect == true).Count();
-                var userAnswers = answers.Where(answer => userResponce.AnswerIds.Contains(answer.Id)).ToList();
-                var lastThreeQualies = question.DecisionQualities.TakeLast(2).Select(x => x.Value).ToList();
-
-                bool decisionQuality = CorrectnessVerification(userAnswers, correctAnswersAmount);
-                if (decisionQuality == true)
-                    correct++;
-                else
-                    incorrect++;
-                question.DecisionQualities.Add(new DecisionQuality()
+                int correct = 0;
+                int incorrect = 0;
+                foreach (var userResponce in userResponces)
                 {
-                    Value = decisionQuality
-                });
-                lastThreeQualies.Add(decisionQuality);
+                    Question? question = _dbContext.Questions
+                        .Include(q => q.QuestionGroup)
+                        .Include(q => q.Answers)
+                        .Include(q => q.DecisionQualities)
+                        .FirstOrDefault(x => x.Id == userResponce.QuestionId);
 
-                QuestionDTO questionDTO = SpacedRepetitionAlgorithm(new QuestionDTO()
-                {
-                    Qualities = lastThreeQualies,
-                    Interval = question.Interval,
-                    IntervalModifier = question.QuestionGroup.IntervalModifier,
-                    NewInterval = question.QuestionGroup.NewInterval,
-                    RepetitionDate = question.RepetitionDate,
-                    State = question.State,
-                    Step = question.Step,
-                    EasyFactor = question.EasyFactor,
-                    EasyBonus = question.QuestionGroup.EasyBonus,
-                    Repetitions = question.Repetitions
-                });
-                questionDTO.Adapt(question);
-                _dbContext.Questions.Update(question);
+                    var answers = question.Answers;
+                    var correctAnswersAmount = question.Answers.Where(x => x.IsCorrect == true).Count();
+                    var userAnswers = answers.Where(answer => userResponce.AnswerIds.Contains(answer.Id)).ToList();
+                    var lastThreeQualies = question.DecisionQualities.TakeLast(2).Select(x => x.Value).ToList();
 
-                await _dbContext.SaveChangesAsync();
-                
+                    bool decisionQuality = CorrectnessVerification(userAnswers, correctAnswersAmount);
+                    if (decisionQuality == true)
+                        correct++;
+                    else
+                        incorrect++;
+                    question.DecisionQualities.Add(new DecisionQuality()
+                    {
+                        Value = decisionQuality
+                    });
+                    lastThreeQualies.Add(decisionQuality);
+
+                    QuestionDTO questionDTO = SpacedRepetitionAlgorithm(new QuestionDTO()
+                    {
+                        Qualities = lastThreeQualies,
+                        Interval = question.Interval,
+                        IntervalModifier = question.QuestionGroup.IntervalModifier,
+                        NewInterval = question.QuestionGroup.NewInterval,
+                        RepetitionDate = question.RepetitionDate,
+                        State = question.State,
+                        Step = question.Step,
+                        EasyFactor = question.EasyFactor,
+                        EasyBonus = question.QuestionGroup.EasyBonus,
+                        Repetitions = question.Repetitions
+                    });
+                    questionDTO.Adapt(question);
+                    _dbContext.Questions.Update(question);
+
+                    await _dbContext.SaveChangesAsync();
+
+                }
+                return (correct, incorrect);
             }
-            return (correct, incorrect);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public static QuestionDTO SpacedRepetitionAlgorithm(QuestionDTO question)
@@ -112,7 +120,7 @@ namespace interval_recall.BLL.Services
                     Enum.GetName(typeof(States), States.Learning)! :
                     Enum.GetName(typeof(States), States.Graduated)!;
 
-                if (question.Step == TimeSpan.FromDays(1))
+                if (question.Step == TimeSpan.FromMinutes(23.59))
                 {
                     question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
                     //question.Step = TimeSpan.FromDays(1);
@@ -120,7 +128,10 @@ namespace interval_recall.BLL.Services
                 }
 
                 else if (question.Step == TimeSpan.FromMinutes(10))
-                    question.Interval = question.Step = TimeSpan.FromDays(1);
+                {
+                    question.Interval = TimeSpan.FromDays(1);
+                    question.Step = TimeSpan.FromMinutes(23.59);
+                }
 
                 else if (question.Step == TimeSpan.FromMinutes(1))
                     question.Interval = question.Step = TimeSpan.FromMinutes(10);
