@@ -1,6 +1,8 @@
+using interval_recall.BLL.Interfaces;
 using interval_recall.BLL.Services;
-using interval_recall.DAL.Entities;
+using interval_recall.DAL.EF;
 using interval_recall.Models.DTOs;
+using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,19 +11,19 @@ namespace interval_recall.Test
     public class LearningServiceFixture : IDisposable
     {
         private readonly IServiceScope _scope;
-        public IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public LearningServiceFixture()
         {
-            //var serviceCollection = new ServiceCollection();
-            //var configBuilder = new ConfigurationBuilder();
-            //   .SetBasePath(Directory.GetCurrentDirectory())
-            //   .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            var serviceCollection = new ServiceCollection();
+            var configBuilder = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-            //_configuration = configBuilder.Build();
-            //var serviceProvider = serviceCollection.BuildServiceProvider();
+            _configuration = configBuilder.Build();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            //_scope = serviceProvider.CreateScope();
+            _scope = serviceProvider.CreateScope();
         }
 
         public void Dispose()
@@ -36,50 +38,34 @@ namespace interval_recall.Test
     }
 
 
-    public class LearningServiceTest
+    public class LearningServiceTest : IClassFixture<LearningServiceFixture>
     {
-        //private readonly ILearningService _learningService;
-        public LearningServiceTest(/*ILearningService learningService*/)
+        private readonly ILearningService _learningService;
+        public LearningServiceTest(LearningServiceFixture learningServiceFixture)
         {
-            //_learningService = learningService;
+            _learningService = new LearningService(learningServiceFixture.GetService<IQuestionService>(), learningServiceFixture.GetService<IntervalRecallContext>(), learningServiceFixture.GetService<IMapper>());
         }
 
         [Fact]
         public void SpacedRepetitionAlgorithm_ReturnValue()
         {
-
-            Question question = new()
+            List<InUserResponceDTO> userResponses = new List<InUserResponceDTO>()
             {
-                Text = "В какой из этих столиц бывших союзных республик раньше других появилось метро?",
-                Answers = new List<Answer>()
+                new InUserResponceDTO()
                 {
-                    new (){ Id = Guid.NewGuid(), Value = "Тбилиси" , IsCorrect = true},
-                    new (){ Id = Guid.NewGuid(), Value = "Ереван", IsCorrect = false},
-                    new (){ Id = Guid.NewGuid(), Value = "Баку", IsCorrect = false},
-                    new (){ Id = Guid.NewGuid(), Value = "Минск", IsCorrect = false},
+                    QuestionId = Guid.Parse("bbaac419-0f94-4ca9-5e5e-08dbffdefadb"),
+                    AnswerIds = new List<Guid>() 
+                    {
+                        Guid.Parse("7b6a52ef-bfeb-4eb6-e6fb-08dbffdefae"),
+                        Guid.Parse("a568ea94-87c3-4c01-e6fc-08dbffdefae1"),
+                        Guid.Parse("d41d6e73-8d45-414a-e6fd-08dbffdefae1"),
+                        Guid.Parse("5fc24f65-df6c-4d50-e6fe-08dbffdefae1")
+                    }
                 }
             };
-            bool quality = LearningService.CorrectnessVerification(new List<Answer>() { new Answer() { IsCorrect = true } }, 1);
-
-            QuestionDTO testQuestionDTO = new QuestionDTO()
-            {
-                Qualities = new List<bool> { true, false, true },
-                EasyFactor = 2.5,
-                //Interval = 1,
-                IntervalModifier = 1,
-                NewInterval = 0.2,
-                RepetitionDate = DateTime.Now,
-                EasyBonus = 1.3,
-                Repetitions = 0
-            };
             int i = 1;
-            while (true)
-            {
-                var questionDTO = LearningService.SpacedRepetitionAlgorithm(testQuestionDTO);
-                if (i == 5)
-                    testQuestionDTO.Qualities[2] = false;
-                i++;
-            }
+
+            var responce = _learningService.RecallAsync(userResponses);
         }
     }
 }
