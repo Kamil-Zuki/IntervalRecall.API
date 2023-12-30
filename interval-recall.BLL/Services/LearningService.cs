@@ -84,71 +84,110 @@ namespace interval_recall.BLL.Services
 
         public static QuestionDTO SpacedRepetitionAlgorithm(QuestionDTO question)
         {
-            //var delay = (DateTime.Now - question.RepetitionDate).Days;// Actual
-            //var delay = (question.RepetitionDate - DateTime.Now).Days;// Test
-            int delay = question.State == "New" ? 0 : (question.RepetitionDate - DateTime.Now).Days;
+            int delay = CalculateDelay(question);
 
-            #region Consts
-            const int maximumInterval = 36500;
-            const double minEasyFactor = 1.3;
-            const double maxEasyFactor = 5;
-            const double easyFactorSubstractedValue = 0.2;
-            const double easyFactorAddedValue = 0.15;
-            #endregion
-            
-
-            if (question.Qualities[^1] == false)// Incorrect(0)
+            if (question.Qualities[^1] == false)
             {
-                question.EasyFactor = Math.Round(Math.Max(minEasyFactor, question.EasyFactor - easyFactorSubstractedValue), 2, MidpointRounding.AwayFromZero);
-                if (question.State == Enum.GetName(typeof(States), States.New) || question.State == Enum.GetName(typeof(States), States.Learning))
-                {
-                    question.Interval = question.Step = question.Step < TimeSpan.FromDays(1) ?
-                        TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(10);
-
-                    question.State = Enum.GetName(typeof(States), States.Learning)!;
-                }
-                else
-                {
-                    question.Interval = question.Interval * question.NewInterval;
-                    question.State = Enum.GetName(typeof(States), States.Learning)!;
-                }
+                HandleIncorrectAnswer(question, delay);
             }
-            else if (question.Qualities.Count() > 2 && question.State == Enum.GetName(typeof(States), States.Graduated) && question.Qualities[^3..^1].All(q => q == true))// Correct 3 times 
+            else if (IsCorrectThreeTimes(question))
             {
-                question.EasyFactor = Math.Round(Math.Min(maxEasyFactor, question.EasyFactor + easyFactorAddedValue), 2, MidpointRounding.AwayFromZero);
-                //question.Interval = Math.Min(maximumInterval, (int)Math.Max(question.Interval + 1, (question.Interval + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
-
-                question.Interval = TimeSpan.FromDays(Math.Min(maximumInterval, (question.Interval.Days + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
+                HandleCorrectThreeTimes(question, delay);
             }
-            else if (question.Qualities[^1] == true)// Correct(1)
+            else if (question.Qualities[^1] == true)
             {
-                question.EasyFactor = Math.Round(question.EasyFactor, 2, MidpointRounding.AwayFromZero);
-                question.State = question.State != Enum.GetName(typeof(States), States.Graduated) ?
-                    Enum.GetName(typeof(States), States.Learning)! :
-                    Enum.GetName(typeof(States), States.Graduated)!;
-
-                if (question.Step == TimeSpan.FromHours(23))
-                {
-                    question.Interval = TimeSpan.FromDays(Math.Min(maximumInterval, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
-                    //question.Step = TimeSpan.FromDays(1);
-                    question.State = Enum.GetName(typeof(States), States.Graduated)!;
-                }
-
-                else if (question.Step == TimeSpan.FromMinutes(10))
-                {
-                    question.Interval = TimeSpan.FromDays(1);
-                    question.Step = TimeSpan.FromHours(23);
-                }
-
-                else if (question.Step == TimeSpan.FromMinutes(1))
-                    question.Interval = question.Step = TimeSpan.FromMinutes(10);
-
+                HandleCorrectOnce(question, delay);
             }
 
-            question.Repetitions++;
-            question.RepetitionDate = DateTime.Now + question.Interval;
+            UpdateRepetitionsAndDate(question);
 
             return question;
+        }
+
+        private static int CalculateDelay(QuestionDTO question)
+        {
+            return question.State == "New" ? 0 : (question.RepetitionDate - DateTime.Now).Days;
+        }
+
+        private static void HandleIncorrectAnswer(QuestionDTO question, int delay)
+        {
+            question.EasyFactor = Math.Round(Math.Max(1.3, question.EasyFactor - 0.2), 2, MidpointRounding.AwayFromZero);
+            if (question.State == Enum.GetName(typeof(States), States.New) || question.State == Enum.GetName(typeof(States), States.Learning))
+            {
+                SetIntervalAndStepToMinimum(question);
+                question.State = Enum.GetName(typeof(States), States.Learning)!;
+            }
+            else
+            {
+                AdjustInterval(question);
+                question.State = Enum.GetName(typeof(States), States.Learning)!;
+            }
+        }
+
+        private static bool IsCorrectThreeTimes(QuestionDTO question)
+        {
+            return question.Qualities.Count() > 2 && question.State == Enum.GetName(typeof(States), States.Graduated) && question.Qualities[^3..^1].All(q => q == true);
+        }
+
+        private static void HandleCorrectThreeTimes(QuestionDTO question, int delay)
+        {
+            question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.15), 2, MidpointRounding.AwayFromZero);
+            question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
+        }
+
+        private static void HandleCorrectOnce(QuestionDTO question, int delay)
+        {
+            //question.EasyFactor = Math.Round(question.EasyFactor, 2, MidpointRounding.AwayFromZero);
+            question.State = question.State != Enum.GetName(typeof(States), States.Graduated) ?
+                Enum.GetName(typeof(States), States.Learning)! :
+                Enum.GetName(typeof(States), States.Graduated)!;
+
+            if (question.Step == TimeSpan.FromHours(23))
+            {
+                AdjustIntervalForLongStep(question, delay);
+                question.State = Enum.GetName(typeof(States), States.Graduated)!;
+            }
+            else if (question.Step == TimeSpan.FromMinutes(10))
+            {
+                SetIntervalToOneDayAndStepToTwentyThreeHours(question);
+            }
+            else if (question.Step == TimeSpan.FromMinutes(1))
+            {
+                SetIntervalAndStepToTenMinutes(question);
+            }
+        }
+
+        private static void UpdateRepetitionsAndDate(QuestionDTO question)
+        {
+            question.Repetitions++;
+            question.RepetitionDate = DateTime.Now + question.Interval;
+        }
+
+        private static void SetIntervalAndStepToMinimum(QuestionDTO question)
+        {
+            question.Interval = question.Step = question.Step < TimeSpan.FromDays(1) ?
+                TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(10);
+        }
+
+        private static void AdjustInterval(QuestionDTO question)
+        {
+            question.Interval = question.Interval * question.NewInterval;
+        }
+
+        private static void AdjustIntervalForLongStep(QuestionDTO question, int delay)
+        {
+            question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
+        }
+
+        private static void SetIntervalToOneDayAndStepToTwentyThreeHours(QuestionDTO question)
+        {
+            question.Interval = TimeSpan.FromDays(1);
+            question.Step = TimeSpan.FromHours(23);
+        }
+
+        private static void SetIntervalAndStepToTenMinutes(QuestionDTO question)
+        {
+            question.Interval = question.Step = TimeSpan.FromMinutes(10);
         }
 
 
