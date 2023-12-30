@@ -66,7 +66,8 @@ namespace interval_recall.BLL.Services
                         EasyBonus = question.QuestionGroup.EasyBonus,
                         Repetitions = question.Repetitions
                     });
-                    questionDTO.Adapt(question);
+                    //questionDTO.Adapt(question);
+                    questionDTO = _mapper.Adapt(questionDTO);
                     _dbContext.Questions.Update(question);
 
                     await _dbContext.SaveChangesAsync();
@@ -84,13 +85,21 @@ namespace interval_recall.BLL.Services
         public static QuestionDTO SpacedRepetitionAlgorithm(QuestionDTO question)
         {
             //var delay = (DateTime.Now - question.RepetitionDate).Days;// Actual
-            var delay = (question.RepetitionDate - DateTime.Now).Days;// Test
+            //var delay = (question.RepetitionDate - DateTime.Now).Days;// Test
+            int delay = question.State == "New" ? 0 : (question.RepetitionDate - DateTime.Now).Days;
 
-
+            #region Consts
+            const int maximumInterval = 36500;
+            const double minEasyFactor = 1.3;
+            const double maxEasyFactor = 5;
+            const double easyFactorSubstractedValue = 0.2;
+            const double easyFactorAddedValue = 0.15;
+            #endregion
+            
 
             if (question.Qualities[^1] == false)// Incorrect(0)
             {
-                question.EasyFactor = Math.Round(Math.Max(1.3, question.EasyFactor - 0.2), 2, MidpointRounding.AwayFromZero);
+                question.EasyFactor = Math.Round(Math.Max(minEasyFactor, question.EasyFactor - easyFactorSubstractedValue), 2, MidpointRounding.AwayFromZero);
                 if (question.State == Enum.GetName(typeof(States), States.New) || question.State == Enum.GetName(typeof(States), States.Learning))
                 {
                     question.Interval = question.Step = question.Step < TimeSpan.FromDays(1) ?
@@ -103,15 +112,13 @@ namespace interval_recall.BLL.Services
                     question.Interval = question.Interval * question.NewInterval;
                     question.State = Enum.GetName(typeof(States), States.Learning)!;
                 }
-
             }
-            else if (question.Qualities.Count() > 2 && question.State == Enum.GetName(typeof(States), States.Graduated) && question.Qualities[^1] == true && question.Qualities[^2] == true && question.Qualities[^3] == true)// Correct 3 times 
+            else if (question.Qualities.Count() > 2 && question.State == Enum.GetName(typeof(States), States.Graduated) && question.Qualities[^3..^1].All(q => q == true))// Correct 3 times 
             {
-                question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.15), 2, MidpointRounding.AwayFromZero);
-                //question.Interval = Math.Min(36500, (int)Math.Max(question.Interval + 1, (question.Interval + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
+                question.EasyFactor = Math.Round(Math.Min(maxEasyFactor, question.EasyFactor + easyFactorAddedValue), 2, MidpointRounding.AwayFromZero);
+                //question.Interval = Math.Min(maximumInterval, (int)Math.Max(question.Interval + 1, (question.Interval + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
 
-                question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
-
+                question.Interval = TimeSpan.FromDays(Math.Min(maximumInterval, (question.Interval.Days + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
             }
             else if (question.Qualities[^1] == true)// Correct(1)
             {
@@ -122,7 +129,7 @@ namespace interval_recall.BLL.Services
 
                 if (question.Step == TimeSpan.FromHours(23))
                 {
-                    question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
+                    question.Interval = TimeSpan.FromDays(Math.Min(maximumInterval, (question.Interval.Days + (int)Math.Round(delay / 4.0, 0, MidpointRounding.AwayFromZero)) * question.EasyFactor * question.IntervalModifier));
                     //question.Step = TimeSpan.FromDays(1);
                     question.State = Enum.GetName(typeof(States), States.Graduated)!;
                 }
@@ -145,7 +152,7 @@ namespace interval_recall.BLL.Services
         }
 
 
-        public static bool CorrectnessVerification(List<Answer> userAnswers, int correctAnswers)
+        private static bool CorrectnessVerification(List<Answer> userAnswers, int correctAnswers)
         {
             if (userAnswers.Count != correctAnswers)
                 return false;
