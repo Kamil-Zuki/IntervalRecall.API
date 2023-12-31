@@ -3,6 +3,6 @@
     public class InUserResponceDTO
     {
         public Guid QuestionId { get; set; }
-        public ICollection<Guid> AnswerIds { get; set; }
+        public List<Guid> AnswerIds { get; set; }
     }
 }
