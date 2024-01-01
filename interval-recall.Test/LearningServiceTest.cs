@@ -53,32 +53,37 @@ namespace interval_recall.Test
     public class LearningServiceTest : IClassFixture<LearningServiceFixture>
     {
         private readonly ILearningService _learningService;
+        private readonly IStatisticService _statisticService;
         public LearningServiceTest(LearningServiceFixture learningServiceFixture)
         {
             _learningService = new LearningService(learningServiceFixture.GetService<IQuestionService>(), learningServiceFixture.GetService<IntervalRecallContext>(), learningServiceFixture.GetService<IMapper>());
+            _statisticService = new StatisticService(learningServiceFixture.GetService<IntervalRecallContext>());
         }
 
         [Fact]
         public async Task SpacedRepetitionAlgorithm_ReturnValue()
         {
-            Guid answerId = Guid.Parse("c435ce19-162c-4240-e6df-08dbffdefae1");
+            Guid answerId = Guid.Parse("88871711-d482-4ecc-e6e7-08dbffdefae1");
             List<InUserResponceDTO> userResponses = new List<InUserResponceDTO>()
             {
                 new InUserResponceDTO()
                 {
-                    QuestionId = Guid.Parse("07f8a364-a326-421a-5e57-08dbffdefadb"),
+                    QuestionId = Guid.Parse("ad3cf19a-88b6-4785-5e59-08dbffdefadb"),
                     AnswerIds = new List<Guid>()
                     {
-                        Guid.Parse("c435ce19-162c-4240-e6df-08dbffdefae1")
+                        Guid.Parse("88871711-d482-4ecc-e6e7-08dbffdefae1")
                         //Guid.Parse("a568ea94-87c3-4c01-e6fc-08dbffdefae1"),
                         //Guid.Parse("d41d6e73-8d45-414a-e6fd-08dbffdefae1"),
                         //Guid.Parse("5fc24f65-df6c-4d50-e6fe-08dbffdefae1")
-                    }  
+                    }
                 }
             };
 
+            for (int i = 0; i < 1; i++)
+            {
+                var responce = await _learningService.RecallAsync(userResponses);
 
-            var responce = await _learningService.RecallAsync(userResponses);
+            }
         }
     }
 }

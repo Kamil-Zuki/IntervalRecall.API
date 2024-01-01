@@ -131,7 +131,7 @@ namespace interval_recall.BLL.Services
 
         private static void HandleCorrectThreeTimes(QuestionDTO question, int delay)
         {
-            question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.15), 2, MidpointRounding.AwayFromZero);
+            question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.20), 2, MidpointRounding.AwayFromZero);
             question.Interval = TimeSpan.FromDays(Math.Min(36500, (question.Interval.Days + delay) * question.EasyFactor * question.IntervalModifier * question.EasyBonus));
         }
 
@@ -145,6 +145,7 @@ namespace interval_recall.BLL.Services
             if (question.Step == TimeSpan.FromHours(23))
             {
                 AdjustIntervalForLongStep(question, delay);
+                question.EasyFactor = Math.Round(Math.Min(5, question.EasyFactor + 0.15), 2, MidpointRounding.AwayFromZero);
                 question.State = Enum.GetName(typeof(States), States.Graduated)!;
             }
             else if (question.Step == TimeSpan.FromMinutes(10))

@@ -17,7 +17,8 @@ namespace interval_recall.BLL.Services
         }
         public async Task RemoveStatisticAsync(Guid questionGroupId)
         {
-            IQueryable<Question> questions = _dataContext.Questions.Where(q => q.QuestionGroupId == questionGroupId);
+            IQueryable<Question> questions = _dataContext.Questions.Where(q => q.QuestionGroupId == questionGroupId)
+                .Include(q => q.DecisionQualities);
             if (!questions.Any())
                 throw new Exception("There is no such group of questions");
             foreach (var question in questions)
@@ -28,6 +29,7 @@ namespace interval_recall.BLL.Services
                 question.RepetitionDate = DateTime.Now;
                 question.State = Enum.GetName(typeof(States), States.New)!;
                 question.Step = TimeSpan.FromMinutes(1);
+                _dataContext.DecisionQualities.RemoveRange(question.DecisionQualities);
             }
             await _dataContext.SaveChangesAsync();
         }
