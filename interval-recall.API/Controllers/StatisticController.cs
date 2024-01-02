@@ -15,7 +15,7 @@ namespace interval_recall.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<QuestionGroupStatistic>>> GetStatistic(Guid? questionGroupId)
+        public async Task<ActionResult<List<QuestionGroupStatistic>>> GetStatisticAsync(Guid? questionGroupId)
         {
             try
             {

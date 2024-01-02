@@ -14,8 +14,6 @@ namespace interval_recall.Test
     {
         private readonly IServiceScope _scope;
         private readonly IConfiguration _configuration;
-        //private readonly IMapper _mapper;
-        //private readonly IQuestionService _questionService;
 
         public LearningServiceFixture()
         {
@@ -63,7 +61,9 @@ namespace interval_recall.Test
         [Fact]
         public async Task SpacedRepetitionAlgorithm_ReturnValue()
         {
-            Guid answerId = Guid.Parse("88871711-d482-4ecc-e6e7-08dbffdefae1");
+
+
+
             List<InUserResponceDTO> userResponses = new List<InUserResponceDTO>()
             {
                 new InUserResponceDTO()
@@ -79,10 +79,9 @@ namespace interval_recall.Test
                 }
             };
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 6; i++)
             {
                 var responce = await _learningService.RecallAsync(userResponses);
-
             }
         }
     }
