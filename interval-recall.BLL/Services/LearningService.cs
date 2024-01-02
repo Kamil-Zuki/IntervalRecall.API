@@ -22,7 +22,7 @@ namespace interval_recall.BLL.Services
         public LearningService(IQuestionService questionService, IntervalRecallContext dbContext, IMapper mapper)
         {
             _questionService = questionService;
-            _dbContext = dbContext,
+            _dbContext = dbContext;
             _mapper = mapper;
         }
 
