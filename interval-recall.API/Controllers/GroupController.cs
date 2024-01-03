@@ -54,5 +54,19 @@ namespace interval_recall.API.Controllers
                 throw new Exception(ex.Message);
             }
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateAsync(UpdateQuestionGroupDTO updateQuestionGroupDTO)
+        {
+            try
+            {
+                await _questionGroupService.UpdateAsync(updateQuestionGroupDTO);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

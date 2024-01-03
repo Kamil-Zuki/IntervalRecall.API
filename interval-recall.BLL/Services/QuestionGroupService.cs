@@ -48,11 +48,18 @@ namespace interval_recall.BLL.Services
         }
         public async Task UpdateAsync(UpdateQuestionGroupDTO questionGroupDTO)
         {
-            var questionGroup = _dataContext.QuestionGroups.Where(q => q.Id == questionGroupDTO.Id);
-            if (questionGroup.Count() == 0)
-                throw new Exception("Question group not found");
+            QuestionGroup questionGroup = await _dataContext.QuestionGroups.FirstOrDefaultAsync(q => q.Id == questionGroupDTO.Id);
+            if (questionGroup == null)
+                throw new Exception("The question group not found");
 
             _dataContext.QuestionGroups.Update(_mapper.Map<QuestionGroup>(questionGroupDTO));
+            _dataContext.QuestionGroups.Update(new QuestionGroup()
+            {
+                Id = questionGroupDTO.Id,
+                Title = questionGroupDTO.Title ?? questionGroup.Title,
+                AmountOfNew = questionGroupDTO.AmountOfNew ?? questionGroup.AmountOfNew,
+                AmountOfLearn = questionGroupDTO.AmountOfLearn ?? questionGroup.AmountOfLearn
+            });
             await _dataContext.SaveChangesAsync();
         }
         public async Task DeleteAsync()
