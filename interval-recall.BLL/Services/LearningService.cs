@@ -114,7 +114,7 @@ namespace interval_recall.BLL.Services
             if (question.State == Enum.GetName(typeof(States), States.New) || question.State == Enum.GetName(typeof(States), States.Learning))
             {
                 //Set interval and step to minimum
-                question.Interval = question.Step = question.Step < TimeSpan.FromDays(1) ?
+                question.Interval = question.Step = question.Step < TimeSpan.FromHours(23) ?
                     TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(10);
 
                 question.State = Enum.GetName(typeof(States), States.Learning)!;
