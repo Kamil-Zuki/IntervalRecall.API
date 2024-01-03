@@ -16,9 +16,9 @@ namespace interval_recall.DAL.Entities
         public string Title { get; set; }
         public int AmountOfNew { get; set; }
         public int AmountOfLearn { get; set; }
-        public double IntervalModifier { get; set; }
-        public double EasyBonus { get; set; }
-        public double NewInterval {get; set; }
+        public double IntervalModifier { get; set; } = 1.0;
+        public double EasyBonus { get; set; } = 1.3;
+        public double NewInterval {get; set; } = 0.2;
 
         public Guid? UserId { get; set; }
         public virtual User? User { get; set; }

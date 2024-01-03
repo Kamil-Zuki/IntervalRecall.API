@@ -2,6 +2,7 @@
 using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
 using interval_recall.Models.DTOs;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace interval_recall.BLL.Services
@@ -9,9 +10,11 @@ namespace interval_recall.BLL.Services
     public class QuestionGroupService : IQuestionGroupService
     {
         private readonly IntervalRecallContext _dataContext;
-        public QuestionGroupService(IntervalRecallContext dataContext)
+        private readonly IMapper _mapper;
+        public QuestionGroupService(IntervalRecallContext dataContext, IMapper mapper)
         {
             _dataContext = dataContext;
+            _mapper = mapper;
         }
 
         public async Task CreateAsync(InQuestionGroupDTO questionGroupDTO)
@@ -43,21 +46,19 @@ namespace interval_recall.BLL.Services
 
             }).ToListAsync();
         }
-        public async Task UpdateAsync()
+        public async Task UpdateAsync(UpdateQuestionGroupDTO questionGroupDTO)
         {
+            var questionGroup = _dataContext.QuestionGroups.Where(q => q.Id == questionGroupDTO.Id);
+            if (questionGroup.Count() == 0)
+                throw new Exception("Question group not found");
 
+            _dataContext.QuestionGroups.Update(_mapper.Map<QuestionGroup>(questionGroupDTO));
+            await _dataContext.SaveChangesAsync();
         }
         public async Task DeleteAsync()
         {
 
         }
-        public async Task ShowStatisticsAsync()
-        {
 
-        }
-        public async Task EraseStatisticsAsync()
-        {
-
-        }
     }
 }

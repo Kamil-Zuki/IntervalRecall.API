@@ -9,7 +9,7 @@ namespace interval_recall.Models.DTOs
         [Range(0, int.MaxValue, ErrorMessage = "AmountOfNew must be a non-negative number")]
         public int AmountOfNew { get; set; }
 
-        [Range(typeof(int), "0", "1000000", ErrorMessage = "AmountOfLearn must be a non-negative number")]
+        [Range(0, int.MaxValue, ErrorMessage = "AmountOfLearn must be a non-negative number")]
         public int AmountOfLearn
         {
             get { return _amountOfLearn; }
@@ -23,9 +23,9 @@ namespace interval_recall.Models.DTOs
             }
         }
         private int _amountOfLearn;
-        public double IntervalModifier { get; set; } = 1.0;
-        public double EasyBonus { get; set; } = 1.3;
-        public double NewInterval { get; set; } = 0.2;
+        public double IntervalModifier { get; set; }
+        public double EasyBonus { get; set; }
+        public double NewInterval { get; set; }
         public Guid? UserId { get; set; }
     }
 }

@@ -2,20 +2,24 @@
 using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
 using interval_recall.Models.DTOs;
-using Mapster;
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace interval_recall.BLL.Services
 {
     public class QuestionService : IQuestionService
     {
         private readonly IntervalRecallContext _dataContext;
-        public QuestionService(IntervalRecallContext dataContext)
+        private readonly IMapper _mapper;
+        public QuestionService(IntervalRecallContext dataContext, IMapper mapper)
         {
             _dataContext = dataContext;
+            _mapper = mapper;
         }
         public async Task CreateRangeAsync(List<InQuestionDTO> questionDTOs)
         {
+
             _dataContext.Questions.AddRange(questionDTOs.Select(questionDTO => new Question()
             {
                 Text = questionDTO.Text,
@@ -25,8 +29,7 @@ namespace interval_recall.BLL.Services
                     Value = answerDTO.Value,
                     IsCorrect = answerDTO.IsCorrect
                 }).ToList()
-            }).ToList()
-            );
+            }).ToList());
             await _dataContext.SaveChangesAsync();
         }
 
@@ -42,37 +45,35 @@ namespace interval_recall.BLL.Services
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync();
 
-                    var random = new Random();
                     var newQuestions = questionGroup.Questions
                         .Where(q => q.State == "New")
-                        .OrderBy(q => random.Next())
+                        .OrderByDescending(q => q.RepetitionDate)
                         .Take(questionGroup.AmountOfNew)
                         .ToList();
 
                     var learnAndGraduatedQuestions = questionGroup.Questions
-                        .Where(q => q.State == "Learning" || q.State == "Graduated")
-                        .OrderBy(q => random.Next())
+                        .Where(q => q.State != "New")
+                        .OrderByDescending(q => q.RepetitionDate)
                         .Take(questionGroup.AmountOfLearn)
                         .ToList();
 
-                    List<Question> questions = new();
-                    questions.AddRange(newQuestions);
-                    questions.AddRange(learnAndGraduatedQuestions);
+                    List<Question> questions = [.. newQuestions, .. learnAndGraduatedQuestions];
+                    //questions.OrderByDescending(q => q.State == "New" ? 1 : 0);
 
                     return new List<OutRecallQuestionGroupDTO>
                     {
                         new OutRecallQuestionGroupDTO()
                         {
-                            QuestionGroupId = questionGroup.Id,
+                            Id = questionGroup.Id,
                             Title = questionGroup.Title,
                             Questions = questions.Select(q => new OutQuestionDTO()
                             {
-                                QuestionId = q.Id,
+                                Id = q.Id,
                                 Text = q.Text,
                                 State = q.State,
                                 Answers = q.Answers.Select(a => new OutAnswerDTO()
                                 {
-                                    AnswerId = a.Id,
+                                    Id = a.Id,
                                     Value = a.Value
                                 }).ToList()
                             }).ToList()
@@ -90,27 +91,27 @@ namespace interval_recall.BLL.Services
 
                     return questionGroups.Select(g => new OutRecallQuestionGroupDTO()
                     {
-                        QuestionGroupId = g.Id,
+                        Id = g.Id,
                         Title = g.Title,
                         Questions = g.Questions.Select(q => new OutQuestionDTO()
                         {
-                            QuestionId = q.Id,
+                            Id = q.Id,
                             Text = q.Text,
                             State = q.State,
                             Answers = q.Answers.Select(a => new OutAnswerDTO()
                             {
-                                AnswerId = a.Id,
+                                Id = a.Id,
                                 Value = a.Value
                             }).ToList()
                         }).ToList(),
                     }).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
 
