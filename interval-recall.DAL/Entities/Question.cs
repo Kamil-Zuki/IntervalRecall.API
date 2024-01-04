@@ -16,7 +16,7 @@ namespace interval_recall.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public string Text { get; set; }
-        public Int64 IntervalTicks { get; set; } = 60;
+        public long IntervalTicks { get; set; } = 60;
         [NotMapped]
         public TimeSpan Interval
         {

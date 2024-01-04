@@ -69,7 +69,8 @@ namespace interval_recall.BLL.Services
                         EasyBonus = question.QuestionGroup.EasyBonus,
                         Repetitions = question.Repetitions
                     });
-                    questionDTO.Adapt(question);
+
+                    _mapper.From(questionDTO).AdaptTo(question);
 
                     _dbContext.Questions.Update(question);
 
