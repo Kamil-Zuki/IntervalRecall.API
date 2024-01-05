@@ -9,7 +9,7 @@ namespace interval_recall.DAL.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public bool Value { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
         public Guid QuestionId { get; set; }
 
         public virtual Question Question { get; set; }

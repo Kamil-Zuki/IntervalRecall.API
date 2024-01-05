@@ -3,7 +3,6 @@ using interval_recall.DAL.EF;
 using interval_recall.DAL.Entities;
 using interval_recall.DAL.Models;
 using interval_recall.Models.DTOs;
-using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,12 +25,11 @@ namespace interval_recall.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<(int,int)> RecallAsync(List<InUserResponceDTO> userResponces)
+        public async Task<List<QuestionResponceInfo>> RecallAsync(List<InUserResponceDTO> userResponces)
         {
             try
             {
-                int correct = 0;
-                int incorrect = 0;
+                List<QuestionResponceInfo> questionResponces = new();
                 foreach (var userResponce in userResponces)
                 {
                     Question? question = _dbContext.Questions
@@ -46,13 +44,11 @@ namespace interval_recall.BLL.Services
                     var lastThreeQualies = question.DecisionQualities.TakeLast(2).Select(x => x.Value).ToList();
 
                     bool decisionQuality = CorrectnessVerification(userAnswers, correctAnswersAmount);
-                    if (decisionQuality == true)
-                        correct++;
-                    else
-                        incorrect++;
+
                     question.DecisionQualities.Add(new DecisionQuality()
                     {
-                        Value = decisionQuality
+                        //Id = Guid.NewGuid(),
+                        Value = decisionQuality,
                     });
                     lastThreeQualies.Add(decisionQuality);
 
@@ -72,12 +68,14 @@ namespace interval_recall.BLL.Services
 
                     _mapper.From(questionDTO).AdaptTo(question);
 
+                    questionResponces.Add(_mapper.From(question).AdaptTo(new QuestionResponceInfo()));
+
                     _dbContext.Questions.Update(question);
 
-                    await _dbContext.SaveChangesAsync();
-
+                    
                 }
-                return (correct, incorrect);
+                await _dbContext.SaveChangesAsync();
+                return questionResponces;
             }
             catch (Exception ex)
             {
