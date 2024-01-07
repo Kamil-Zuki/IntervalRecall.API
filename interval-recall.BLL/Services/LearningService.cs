@@ -26,7 +26,7 @@ namespace interval_recall.BLL.Services
         }
 
         public async Task<List<QuestionResponceInfo>> RecallAsync(List<InUserResponceDTO> userResponces)
-        {
+        { 
             try
             {
                 List<QuestionResponceInfo> questionResponces = new();
@@ -71,8 +71,6 @@ namespace interval_recall.BLL.Services
                     questionResponces.Add(_mapper.From(question).AdaptTo(new QuestionResponceInfo()));
 
                     _dbContext.Questions.Update(question);
-
-                    
                 }
                 await _dbContext.SaveChangesAsync();
                 return questionResponces;

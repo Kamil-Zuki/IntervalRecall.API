@@ -6,5 +6,6 @@ namespace interval_recall.BLL.Interfaces
     {
         Task CreateRangeAsync(List<InQuestionDTO> questionDTOs);
         Task<List<OutRecallQuestionGroupDTO>> GetRecallQuestionsAsync(Guid? questionGroupId);
+        Task<QuestionsAmountInfo> GetQuestionsAmountInfoAsync(Guid questionGroupId);
     }
 }

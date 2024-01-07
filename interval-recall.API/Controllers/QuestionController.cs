@@ -57,8 +57,23 @@ namespace interval_recall.API.Controllers
             }
         }
 
+        [HttpGet("amount")]
+        public async Task<ActionResult<QuestionsAmountInfo>> GetQuestionsAmountInfoAsync(Guid questionGroupId) 
+        {
+            try
+            {
+                var responce = await _questionService.GetQuestionsAmountInfoAsync(questionGroupId);
+                return Ok(responce);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
-        
+
+
+
 
     }
 }

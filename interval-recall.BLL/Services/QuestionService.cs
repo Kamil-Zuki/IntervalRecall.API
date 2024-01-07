@@ -4,7 +4,6 @@ using interval_recall.DAL.Entities;
 using interval_recall.Models.DTOs;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace interval_recall.BLL.Services
 {
@@ -40,7 +39,7 @@ namespace interval_recall.BLL.Services
                 if (questionGroupId != null)
                 {
                     var questionGroup = await _dataContext.QuestionGroups
-                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
                     .Include(qGroup => qGroup.Questions) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync();
@@ -84,7 +83,7 @@ namespace interval_recall.BLL.Services
                 else
                 {
                     var questionGroups = _dataContext.QuestionGroups
-                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId) /*&& qGroup.Questions.Any(x => DateTime.Now >= x.RepetitionDate)*/)
+                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
                     .Include(qGroup => qGroup.Questions/*.Where(question => DateTime.Now >= question.RepetitionDate)*/)
                     .ThenInclude(q => q.Answers)
                     .ToList();
@@ -114,7 +113,31 @@ namespace interval_recall.BLL.Services
 
         }
 
+        public async Task<QuestionsAmountInfo> GetQuestionsAmountInfoAsync(Guid questionGroupId)
+        {
+            var questionGroup = await _dataContext.QuestionGroups
+                    .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
+                    .Include(qGroup => qGroup.Questions) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
+                    .ThenInclude(q => q.Answers)
+                    .FirstOrDefaultAsync();
 
+            var newQuestions = questionGroup.Questions
+                .Where(q => q.State == "New")
+                //.OrderByDescending(q => q.RepetitionDate)
+                .Take(questionGroup.AmountOfNew)
+                .Count();
+
+            var learnAndGraduatedQuestions = questionGroup.Questions
+                .Where(q => q.State != "New")
+                //.OrderByDescending(q => q.RepetitionDate)
+                .Take(questionGroup.AmountOfLearn)
+                .Count();
+            return new QuestionsAmountInfo()
+            {
+                NewQuestions = newQuestions,
+                LearnAndGraduatedQuestions = learnAndGraduatedQuestions
+            };
+        }
 
 
         public async Task GetAnswersToQuestionsAsync(List<InUserResponceDTO> userResponces)
