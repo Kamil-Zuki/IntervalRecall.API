@@ -31,7 +31,7 @@ namespace interval_recall.API.Controllers
                     AmountOfLearn = questionGroupDTO.AmountOfLearn,
                     EasyBonus = questionGroupDTO.EasyBonus,
                     NewInterval = questionGroupDTO.NewInterval,
-                    UserId = questionGroupDTO.UserId 
+                    UserId = questionGroupDTO.UserId
                 });
                 return Ok();
 
@@ -55,12 +55,12 @@ namespace interval_recall.API.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<OutQuestionGroupDTO>>> GetByIdAsync(Guid id)
+        [HttpGet("{questionGroupId}")]
+        public async Task<ActionResult<List<OutQuestionGroupDTO>>> GetByIdAsync([FromRoute] Guid questionGroupId)
         {
             try
             {
-                return Ok(await _questionGroupService.GetByIdAsync(id));
+                return Ok(await _questionGroupService.GetByIdAsync(questionGroupId));
             }
             catch (Exception ex)
             {

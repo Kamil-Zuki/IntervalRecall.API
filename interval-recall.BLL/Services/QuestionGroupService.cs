@@ -68,9 +68,9 @@ namespace interval_recall.BLL.Services
 
         }
 
-        public async Task<OutQuestionGroupDTO?> GetByIdAsync(Guid id)
+        public async Task<OutQuestionGroupDTO?> GetByIdAsync(Guid questionGroupId)
         {
-            OutQuestionGroupDTO? questionGroup = await _dataContext.QuestionGroups.Select(x => new OutQuestionGroupDTO()
+            OutQuestionGroupDTO? questionGroup = await _dataContext.QuestionGroups.Where(q => q.Id == questionGroupId).Select(x => new OutQuestionGroupDTO()
             {
                 Id = x.Id,
                 Title = x.Title,
