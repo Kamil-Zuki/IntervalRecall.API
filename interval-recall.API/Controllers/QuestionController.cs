@@ -70,10 +70,5 @@ namespace interval_recall.API.Controllers
                 throw new Exception(ex.Message);
             }
         }
-
-
-
-
-
     }
 }

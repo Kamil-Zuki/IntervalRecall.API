@@ -21,16 +21,16 @@ namespace interval_recall.BLL.Services
         {
             _dataContext.QuestionGroups.Add(new QuestionGroup()
             {
-                Title = questionGroupDTO.Title,
-                AmountOfNew = questionGroupDTO.AmountOfNew,
-                AmountOfLearn = questionGroupDTO.AmountOfLearn,
-                IntervalModifier = questionGroupDTO.IntervalModifier,
-                EasyBonus = questionGroupDTO.EasyBonus,
-                NewInterval = questionGroupDTO.NewInterval
+                Title = questionGroupDTO.Title!,
+                AmountOfNew = (int)questionGroupDTO.AmountOfNew!,
+                AmountOfLearn = (int)questionGroupDTO.AmountOfLearn!,
+                IntervalModifier = (int)questionGroupDTO.IntervalModifier!,
+                EasyBonus = (int)questionGroupDTO.EasyBonus!,
+                NewInterval = (int)questionGroupDTO.NewInterval!
             });
             await _dataContext.SaveChangesAsync();
-
         }
+
         public async Task<List<OutQuestionGroupDTO>> GetAllAsync()
         {
             return await _dataContext.QuestionGroups.Select(x => new OutQuestionGroupDTO()
@@ -46,15 +46,19 @@ namespace interval_recall.BLL.Services
 
             }).ToListAsync();
         }
-        public async Task UpdateAsync(UpdateQuestionGroupDTO questionGroupDTO)
+        public async Task UpdateAsync(OutQuestionGroupDTO questionGroupDTO)
         {
             QuestionGroup questionGroup = await _dataContext.QuestionGroups.FirstOrDefaultAsync(q => q.Id == questionGroupDTO.Id);
             if (questionGroup == null)
-                throw new Exception("The question group not found");
+                throw new Exception("There is no such group of questions");
 
             questionGroup.Title = questionGroupDTO.Title ?? questionGroup.Title;
             questionGroup.AmountOfNew = questionGroupDTO.AmountOfNew ?? questionGroup.AmountOfNew;
             questionGroup.AmountOfLearn = questionGroupDTO.AmountOfLearn ?? questionGroup.AmountOfLearn;
+            questionGroup.IntervalModifier = questionGroupDTO.IntervalModifier ?? questionGroup.IntervalModifier;
+            questionGroup.EasyBonus = questionGroupDTO.EasyBonus ?? questionGroup.EasyBonus;
+            questionGroup.NewInterval = questionGroupDTO.NewInterval ?? questionGroup.NewInterval;
+            questionGroup.UserId = questionGroupDTO.UserId ?? questionGroup.UserId;
 
             _dataContext.QuestionGroups.Update(questionGroup);
             await _dataContext.SaveChangesAsync();
@@ -64,5 +68,23 @@ namespace interval_recall.BLL.Services
 
         }
 
+        public async Task<OutQuestionGroupDTO?> GetByIdAsync(Guid id)
+        {
+            OutQuestionGroupDTO? questionGroup = await _dataContext.QuestionGroups.Select(x => new OutQuestionGroupDTO()
+            {
+                Id = x.Id,
+                Title = x.Title,
+                AmountOfNew = x.AmountOfNew,
+                AmountOfLearn = x.AmountOfLearn,
+                IntervalModifier = x.IntervalModifier,
+                NewInterval = x.NewInterval,
+                EasyBonus = x.EasyBonus,
+                UserId = x.UserId
+            }).FirstOrDefaultAsync();
+
+            if (questionGroup == null)
+                throw new Exception("There is no such group of questions");
+            return questionGroup;
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace interval_recall.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<OutQuestionGroupDTO>>> Get()
+        public async Task<ActionResult<List<OutQuestionGroupDTO>>> GetAllAsync()
         {
             try
             {
@@ -55,8 +55,21 @@ namespace interval_recall.API.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<OutQuestionGroupDTO>>> GetByIdAsync(Guid id)
+        {
+            try
+            {
+                return Ok(await _questionGroupService.GetByIdAsync(id));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         [HttpPatch]
-        public async Task<IActionResult> UpdateAsync(UpdateQuestionGroupDTO updateQuestionGroupDTO)
+        public async Task<IActionResult> UpdateAsync(OutQuestionGroupDTO updateQuestionGroupDTO)
         {
             try
             {

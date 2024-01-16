@@ -4,13 +4,13 @@ namespace interval_recall.Models.DTOs
 {
     public class InQuestionGroupDTO
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "AmountOfNew must be a non-negative number")]
-        public int AmountOfNew { get; set; }
+        public int? AmountOfNew { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "AmountOfLearn must be a non-negative number")]
-        public int AmountOfLearn
+        public int? AmountOfLearn
         {
             get { return _amountOfLearn; }
             set
@@ -22,10 +22,10 @@ namespace interval_recall.Models.DTOs
                 _amountOfLearn = value;
             }
         }
-        private int _amountOfLearn;
-        public double IntervalModifier { get; set; }
-        public double EasyBonus { get; set; }
-        public double NewInterval { get; set; }
+        private int? _amountOfLearn;
+        public double? IntervalModifier { get; set; }
+        public double? EasyBonus { get; set; }
+        public double? NewInterval { get; set; }
         public Guid? UserId { get; set; }
     }
 }
