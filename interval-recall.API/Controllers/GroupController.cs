@@ -11,7 +11,6 @@ namespace interval_recall.API.Controllers
         private readonly IQuestionGroupService _questionGroupService;
 
         private readonly ILogger<GroupController> _logger;
-
         public GroupController(ILogger<GroupController> logger, IQuestionGroupService questionGroupService)
         {
             _logger = logger;
