@@ -4,6 +4,6 @@ namespace interval_recall.BLL.Interfaces
 {
     public interface ILearningService
     {
-        Task<List<QuestionResponceInfo>> RecallAsync(List<InUserResponceDTO> userResponces);
+        Task<List<QuestionResponseInfo>> RecallAsync(List<InUserResponceDTO> userResponces);
     }
 }

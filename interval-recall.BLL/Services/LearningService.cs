@@ -25,11 +25,11 @@ namespace interval_recall.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<List<QuestionResponceInfo>> RecallAsync(List<InUserResponceDTO> userResponces)
+        public async Task<List<QuestionResponseInfo>> RecallAsync(List<InUserResponceDTO> userResponces)
         { 
             try
             {
-                List<QuestionResponceInfo> questionResponces = new();
+                List<QuestionResponseInfo> questionResponces = new();
                 foreach (var userResponce in userResponces)
                 {
                     Question? question = _dbContext.Questions
@@ -68,7 +68,7 @@ namespace interval_recall.BLL.Services
 
                     _mapper.From(questionDTO).AdaptTo(question);
 
-                    questionResponces.Add(_mapper.From(question).AdaptTo(new QuestionResponceInfo()));
+                    questionResponces.Add(_mapper.From(question).AdaptTo(new QuestionResponseInfo()));
 
                     _dbContext.Questions.Update(question);
                 }

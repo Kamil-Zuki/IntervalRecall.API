@@ -36,11 +36,12 @@ namespace interval_recall.BLL.Services
         {
             try
             {
+                // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
                 if (questionGroupId != null)
                 {
                     var questionGroup = await _dataContext.QuestionGroups
                     .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
-                    .Include(qGroup => qGroup.Questions) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
+                    .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >= question.RepetitionDate)) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync();
 
@@ -70,6 +71,7 @@ namespace interval_recall.BLL.Services
                                 Id = q.Id,
                                 Text = q.Text,
                                 State = q.State,
+                                RepetitionDate = q.RepetitionDate,
                                 Answers = q.Answers.Select(a => new OutAnswerDTO()
                                 {
                                     Id = a.Id,
@@ -84,7 +86,7 @@ namespace interval_recall.BLL.Services
                 {
                     var questionGroups = _dataContext.QuestionGroups
                     .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
-                    .Include(qGroup => qGroup.Questions/*.Where(question => DateTime.Now >= question.RepetitionDate)*/)
+                    .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >= question.RepetitionDate))
                     .ThenInclude(q => q.Answers)
                     .ToList();
 
@@ -117,7 +119,7 @@ namespace interval_recall.BLL.Services
         {
             var questionGroup = await _dataContext.QuestionGroups
                     .Where(qGroup => (questionGroupId == null ? true : qGroup.Id == questionGroupId))
-                    .Include(qGroup => qGroup.Questions) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
+                    .Include(qGroup => qGroup.Questions.Where(question => DateTime.Now >= question.RepetitionDate)) // .Where(question => DateTime.Now >=/* question.RepetitionDate*/ DateTime.MinValue)
                     .ThenInclude(q => q.Answers)
                     .FirstOrDefaultAsync();
 

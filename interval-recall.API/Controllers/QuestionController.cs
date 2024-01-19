@@ -31,11 +31,11 @@ namespace interval_recall.API.Controllers
         }
 
         [HttpPost("answers")]
-        public async Task<ActionResult<List<QuestionResponceInfo>>> GetAnswersAsync(List<InUserResponceDTO> userResponces)
+        public async Task<ActionResult<List<QuestionResponseInfo>>> GetAnswersAsync(List<InUserResponceDTO> userResponces)
         {
             try
             {
-                List<QuestionResponceInfo> responce = await _learningService.RecallAsync(userResponces);
+                List<QuestionResponseInfo> responce = await _learningService.RecallAsync(userResponces);
                 return Ok(responce);
             }
             catch (Exception ex)

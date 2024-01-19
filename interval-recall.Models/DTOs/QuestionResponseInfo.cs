@@ -1,6 +1,6 @@
 ﻿namespace interval_recall.Models.DTOs
 {
-    public class QuestionResponceInfo
+    public class QuestionResponseInfo
     {
         public Guid Id { get; set; }
         public string Text { get; set; }
