@@ -5,3 +5,5 @@ Welcome to the **IntervalRecall.API**, a tool designed to enhance your knowledge
 
 ## Key Features:
 - **Space Repetition Algorithm:** Leverage the scientifically proven method of spaced repetition to efficiently review and reinforce your understanding of specific topics over time.
+## Run
+To run the project use Dockerfile
